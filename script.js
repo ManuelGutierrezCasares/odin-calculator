@@ -1,84 +1,104 @@
 let operator = '';
 let num1 = '';
 let num2 = '';
+let result = '';
 const displayOutput = document.getElementById('display-output');
 const buttonNumbers = document.querySelectorAll('.button-number');
 const buttonOperators = document.querySelectorAll('.button-operator');
-const buttons = document.querySelectorAll('button');
+const buttonClear = document.querySelector('.button-clear');
+const buttonEqual = document.querySelector('.button-equal');
+let positionNum2 = false;
 
 
+buttonEqual.addEventListener('click',function(e){
+    if(operator === '' || num1 === '' || num2 === ''){
+        let errorNum1 = num1 === '' ? '**EMPTY**':num1;
+        let errorNum2 = num2 === '' ? '**EMPTY**':num2;
+        let errorOperator = operator === '' ? '**EMPTY**':operator;
+        alert(`ERROR, please enter all the terms.\nNumber 1    =    ${errorNum1}\nNumber2    =    ${errorNum2}\nOperator    =    ${errorOperator}`);    
+    }else{
+        positionNum2 = false;
+        //THIS IS THE RESULT OF THE OPERATION
+        result = calculate(num1,num2,operator);
+        result = Math.round(result*100000)/100000;
+        displayOutput.value = result;
+        console.log(result);
+    } 
+});
 
-function displayButtons(){
-    buttonNumbers.forEach(function (button){
-        button.addEventListener('click',function(e){
-            displayOutput.value = this.value;
-            getNumbers(displayOutput);
-        }
-    )
-    })
-}
-displayButtons()
-
-function displayOperator(){
-    buttonOperators.forEach(function (button){
-        button.addEventListener('click',function(e){
-            displayOutput.value = this.value;
-            getOperator(displayOutput);
-        }
-    )
-    })
-}
-displayOperator()
-
-function getNumber(displayOutput){
-    if(num1 === ''){
-        num1 = displayOutput.value;
-        console.log(num1)
-    }else if (num2 === ''){
-        num2 = displayOutput.value;
-        console.log(num2)
-    }
-}
-function getOperator(displayOutput){
-    if(operator === ''){
-        operator = displayOutput.value;
-        console.log(operator)
-    }
-}
-
-
-
-function operate(operator,num1,num2){
-
-    switch (operator){
+function calculate(number1,number2,ope){
+    number1=Number(number1);
+    number2=Number(number2);
+    if(number2 === 0){
+        alert(`ERROR. YOU CAN NOT DIVIDE BY ZERO.\n\nSELECT CLEAR AND TRY AGAIN.`);
+        clear();
+    }else{
+    if(!isNaN(number1) || !isNaN(number2)){
+    switch(ope){
         case '+':
-            return add(num1,num2);
+            return number1 + number2
         case '-':
-            return subtract(num1,num2);
+            return number1 - number2
         case '*':
-            return multiply(num1,num2);
+            return number1 * number2
         case '/':
-            return divide(num1,num2);
-        case '':
-        case null:
-        case undefined:
-            return `Empty, null or undefined operator is not valid`;
+            return number1 / number2
         default:
-            return `Operation ${operator} is not valid`;
+            break;
+        }
+    }else{
+        console.log('ERROR NUM1 O NUM2 NOT NUMERIC')
+    }
     }
 }
 
-function add(a,b){
-    return a+b;
-}
-function subtract(a,b){
-    return a-b;
-}
-function multiply(a,b){
-    return a*b;
-}
-function divide(a,b){
-    return a/b;
+buttonOperators.forEach(e=>e.addEventListener('click',function(e){
+    if (operator === ''){
+        getOperator(this.value);
+    }else{
+        num1 = calculate(num1,num2,operator);
+        num2 = ''
+        //HERE IS THE RESULT WHEN CHAINING OPERATIONS
+        displayOutput.value = Math.round(num1*100000)/100000;;
+        getOperator(this.value);
+    }
+    
+}))
+
+function clear(){
+    num1 = '';
+    num2 = '';
+    operator = '';
+    result = '';
+    positionNum2 = false;
+    displayOutput.value = 'This will be the output'
 }
 
-operate (operator,num1,num2)
+buttonClear.addEventListener('click',clear);
+
+
+buttonNumbers.forEach(e=>e.addEventListener('click',function(e){
+    if(!positionNum2){
+        getNum1(this.value);
+        displayOutput.value = num1;
+    }else{
+        getNum2(this.value);
+        displayOutput.value = num2;
+    }
+}))
+
+
+
+function getOperator(ope){
+    operator = ope;
+    positionNum2 = true;
+}
+
+function getNum1(num){
+        num1 = num1.concat(num);
+}
+
+function getNum2(num){
+    num2 = num2.concat(num);
+}
+
