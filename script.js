@@ -12,9 +12,6 @@ let positionNum2 = false;
 let decimalIsSet = false;
 
 /* still lacking
-    - control decimals
-    - improve return after divided by zero
-    - other UX improvements
     - UI improvements (aesthetics)
     - Keyboard support  */
 
