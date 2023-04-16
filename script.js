@@ -1,13 +1,22 @@
 let operator = '';
-let num1 = '';
-let num2 = '';
+let num1 = '0';
+let num2 = '0';
 let result = '';
 const displayOutput = document.getElementById('display-output');
 const buttonNumbers = document.querySelectorAll('.button-number');
 const buttonOperators = document.querySelectorAll('.button-operator');
 const buttonClear = document.querySelector('.button-clear');
 const buttonEqual = document.querySelector('.button-equal');
+const buttonDecimal = document.getElementById('decimal');
 let positionNum2 = false;
+let decimalIsSet = false;
+
+/* still lacking
+    - control decimals
+    - improve return after divided by zero
+    - other UX improvements
+    - UI improvements (aesthetics)
+    - Keyboard support  */
 
 
 buttonEqual.addEventListener('click',function(e){
@@ -29,7 +38,7 @@ buttonEqual.addEventListener('click',function(e){
 function calculate(number1,number2,ope){
     number1=Number(number1);
     number2=Number(number2);
-    if(number2 === 0){
+    if(number2 === 0 && ope === '/'){
         alert(`ERROR. YOU CAN NOT DIVIDE BY ZERO.\n\nSELECT CLEAR AND TRY AGAIN.`);
         clear();
     }else{
@@ -62,6 +71,7 @@ buttonOperators.forEach(e=>e.addEventListener('click',function(e){
         displayOutput.value = Math.round(num1*100000)/100000;;
         getOperator(this.value);
     }
+    decimalIsSet = false;
     
 }))
 
@@ -71,11 +81,11 @@ function clear(){
     operator = '';
     result = '';
     positionNum2 = false;
-    displayOutput.value = 'This will be the output'
+    decimalIsSet = false;
+    displayOutput.value = '0';
 }
 
 buttonClear.addEventListener('click',clear);
-
 
 buttonNumbers.forEach(e=>e.addEventListener('click',function(e){
     if(!positionNum2){
@@ -87,6 +97,7 @@ buttonNumbers.forEach(e=>e.addEventListener('click',function(e){
     }
 }))
 
+buttonDecimal.addEventListener('click',e=> decimalIsSet = true);
 
 
 function getOperator(ope){
@@ -95,10 +106,22 @@ function getOperator(ope){
 }
 
 function getNum1(num){
+    if(num === '.' && decimalIsSet === true){
+        return;
+    }else if (num == 0 && num1 == 0){
+        num1 = '0';
+    }else{
         num1 = num1.concat(num);
+    }
 }
 
 function getNum2(num){
-    num2 = num2.concat(num);
+    if(num === '.' && decimalIsSet === true){
+        return;
+    }else if (num == 0 && num2 == 0){
+        num2 = '0';
+    }else{
+        num2 = num2.concat(num);
+    }
 }
 
